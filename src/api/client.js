@@ -1,7 +1,10 @@
 import axios from 'axios'
 
+// In dev, requests go through the Vite proxy at /api (see vite.config.js).
+// In production, set VITE_API_BASE_URL to the deployed backend, e.g.
+// https://velaris-perfume-store.onrender.com/api
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
 })
 
 client.interceptors.request.use((config) => {
