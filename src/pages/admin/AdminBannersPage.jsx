@@ -19,12 +19,20 @@ export default function AdminBannersPage() {
   const [editingId, setEditingId] = useState(null)
   const [error, setError] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [search, setSearch] = useState('')
+  const [status, setStatus] = useState('')
 
   function load() {
     bannerApi.getAdminBanners().then(setBanners)
   }
 
   useEffect(load, [])
+
+  const filteredBanners = banners.filter((b) => {
+    if (search && !b.title.toLowerCase().includes(search.toLowerCase())) return false
+    if (status && String(b.active) !== status) return false
+    return true
+  })
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target
@@ -93,44 +101,64 @@ export default function AdminBannersPage() {
       <p className="hint">Banners appear in the homepage carousel &mdash; use them to promote offers and sales.</p>
 
       <div className="admin-split">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Title</th>
-              <th>Order</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {banners.map((b) => (
-              <tr key={b.id}>
-                <td>
-                  <img src={b.imageUrl} alt={b.title} className="admin-table-thumb admin-table-thumb-wide" />
-                </td>
-                <td>
-                  {b.title}
-                  <div className="muted-text">{b.subtitle}</div>
-                </td>
-                <td>{b.displayOrder}</td>
-                <td>
-                  <span className={`status-badge ${b.active ? 'status-delivered' : 'status-cancelled'}`}>
-                    {b.active ? 'Active' : 'Hidden'}
-                  </span>
-                </td>
-                <td className="admin-table-actions">
-                  <button className="link-button" onClick={() => startEdit(b)}>
-                    Edit
-                  </button>
-                  <button className="link-button danger" onClick={() => handleDelete(b.id, b.title)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          <div className="admin-toolbar">
+            <input
+              type="search"
+              placeholder="Search banners..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">All statuses</option>
+              <option value="true">Active</option>
+              <option value="false">Hidden</option>
+            </select>
+          </div>
+
+          {filteredBanners.length === 0 ? (
+            <p className="empty-state">No banners match these filters.</p>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Title</th>
+                  <th>Order</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBanners.map((b) => (
+                  <tr key={b.id}>
+                    <td>
+                      <img src={b.imageUrl} alt={b.title} className="admin-table-thumb admin-table-thumb-wide" />
+                    </td>
+                    <td>
+                      {b.title}
+                      <div className="muted-text">{b.subtitle}</div>
+                    </td>
+                    <td>{b.displayOrder}</td>
+                    <td>
+                      <span className={`status-badge ${b.active ? 'status-delivered' : 'status-cancelled'}`}>
+                        {b.active ? 'Active' : 'Hidden'}
+                      </span>
+                    </td>
+                    <td className="admin-table-actions">
+                      <button className="link-button" onClick={() => startEdit(b)}>
+                        Edit
+                      </button>
+                      <button className="link-button danger" onClick={() => handleDelete(b.id, b.title)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
 
         <form className="admin-form admin-form-card" onSubmit={handleSubmit}>
           <h2>{editingId ? 'Edit Banner' : 'Add Banner'}</h2>

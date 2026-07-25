@@ -10,12 +10,20 @@ export default function AdminCategoriesPage() {
   const [editingId, setEditingId] = useState(null)
   const [error, setError] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [search, setSearch] = useState('')
+  const [status, setStatus] = useState('')
 
   function load() {
     categoryApi.getAdminCategories().then(setCategories)
   }
 
   useEffect(load, [])
+
+  const filteredCategories = categories.filter((c) => {
+    if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false
+    if (status && String(c.active) !== status) return false
+    return true
+  })
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target
@@ -77,42 +85,62 @@ export default function AdminCategoriesPage() {
       <h1>Categories</h1>
 
       <div className="admin-split">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((c) => (
-              <tr key={c.id}>
-                <td>
-                  <img src={c.imageUrl} alt={c.name} className="admin-table-thumb" />
-                </td>
-                <td>
-                  {c.name}
-                  <div className="muted-text">{c.description}</div>
-                </td>
-                <td>
-                  <span className={`status-badge ${c.active ? 'status-delivered' : 'status-cancelled'}`}>
-                    {c.active ? 'Active' : 'Hidden'}
-                  </span>
-                </td>
-                <td className="admin-table-actions">
-                  <button className="link-button" onClick={() => startEdit(c)}>
-                    Edit
-                  </button>
-                  <button className="link-button danger" onClick={() => handleDelete(c.id, c.name)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          <div className="admin-toolbar">
+            <input
+              type="search"
+              placeholder="Search categories..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">All statuses</option>
+              <option value="true">Active</option>
+              <option value="false">Hidden</option>
+            </select>
+          </div>
+
+          {filteredCategories.length === 0 ? (
+            <p className="empty-state">No categories match these filters.</p>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCategories.map((c) => (
+                  <tr key={c.id}>
+                    <td>
+                      <img src={c.imageUrl} alt={c.name} className="admin-table-thumb" />
+                    </td>
+                    <td>
+                      {c.name}
+                      <div className="muted-text">{c.description}</div>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${c.active ? 'status-delivered' : 'status-cancelled'}`}>
+                        {c.active ? 'Active' : 'Hidden'}
+                      </span>
+                    </td>
+                    <td className="admin-table-actions">
+                      <button className="link-button" onClick={() => startEdit(c)}>
+                        Edit
+                      </button>
+                      <button className="link-button danger" onClick={() => handleDelete(c.id, c.name)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
 
         <form className="admin-form admin-form-card" onSubmit={handleSubmit}>
           <h2>{editingId ? 'Edit Category' : 'Add Category'}</h2>

@@ -9,6 +9,7 @@ const links = [
   { to: '/admin/banners', label: 'Banners' },
   { to: '/admin/orders', label: 'Orders' },
   { to: '/admin/users', label: 'Users' },
+  { to: '/admin/messages', label: 'Messages' },
 ]
 
 export default function AdminLayout() {

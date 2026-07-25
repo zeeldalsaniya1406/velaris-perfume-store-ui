@@ -34,6 +34,9 @@ export default function StorefrontLayout() {
             <NavLink to="/products?categoryId=4" className="nav-link">
               Gift Sets
             </NavLink>
+            <NavLink to="/contact" className="nav-link">
+              Contact
+            </NavLink>
           </nav>
 
           <div className="storefront-actions">
@@ -77,6 +80,9 @@ export default function StorefrontLayout() {
 
       <footer className="storefront-footer">
         <p>Velaris &mdash; Luxury Fragrances</p>
+        <Link to="/contact" className="footer-link">
+          Contact Us
+        </Link>
       </footer>
     </div>
   )

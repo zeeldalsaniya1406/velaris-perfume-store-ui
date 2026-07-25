@@ -5,6 +5,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminBannersPage from './pages/admin/AdminBannersPage'
 import AdminCategoriesPage from './pages/admin/AdminCategoriesPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
+import AdminMessageDetailPage from './pages/admin/AdminMessageDetailPage'
+import AdminMessagesPage from './pages/admin/AdminMessagesPage'
 import AdminOrderDetailPage from './pages/admin/AdminOrderDetailPage'
 import AdminOrdersPage from './pages/admin/AdminOrdersPage'
 import AdminProductFormPage from './pages/admin/AdminProductFormPage'
@@ -12,6 +14,7 @@ import AdminProductsPage from './pages/admin/AdminProductsPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import CartPage from './pages/storefront/CartPage'
 import CheckoutPage from './pages/storefront/CheckoutPage'
+import ContactPage from './pages/storefront/ContactPage'
 import HomePage from './pages/storefront/HomePage'
 import LoginPage from './pages/storefront/LoginPage'
 import MyOrdersPage from './pages/storefront/MyOrdersPage'
@@ -32,6 +35,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route
           path="/checkout"
           element={
@@ -76,6 +80,8 @@ function App() {
         <Route path="orders" element={<AdminOrdersPage />} />
         <Route path="orders/:id" element={<AdminOrderDetailPage />} />
         <Route path="users" element={<AdminUsersPage />} />
+        <Route path="messages" element={<AdminMessagesPage />} />
+        <Route path="messages/:id" element={<AdminMessageDetailPage />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
     </Routes>
